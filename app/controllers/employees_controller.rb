@@ -43,17 +43,7 @@ class EmployeesController < ApplicationController
     country = params[:country]
     return render json: { error: 'country is required' }, status: :bad_request if country.blank?
 
-    scope = Employee.where('lower(country) = ?', country.to_s.downcase)
-    min = scope.minimum(:salary)
-    max = scope.maximum(:salary)
-    avg = scope.average(:salary)
-
-    render json: {
-      country: country,
-      minimum_salary: min&.to_f,
-      maximum_salary: max&.to_f,
-      average_salary: avg&.to_f
-    }
+    render json: Employee.salary_metrics_by_country(country)
   end
 
   # GET /employees/salary_metrics_by_job_title?job_title=Developer
@@ -61,13 +51,7 @@ class EmployeesController < ApplicationController
     job_title = params[:job_title]
     return render json: { error: 'job_title is required' }, status: :bad_request if job_title.blank?
 
-    scope = Employee.where('lower(job_title) = ?', job_title.to_s.downcase)
-    avg = scope.average(:salary)
-
-    render json: {
-      job_title: job_title,
-      average_salary: avg&.to_f
-    }
+    render json: Employee.salary_metrics_by_job_title(job_title)
   end
 
   # POST /employees/:id/deductions
@@ -75,24 +59,7 @@ class EmployeesController < ApplicationController
     gross = params[:gross_salary]
     return render json: { error: 'gross_salary is required' }, status: :bad_request if gross.nil?
 
-    gross = gross.to_f
-
-    tds_rate = case @employee.country.to_s.strip.downcase
-               when 'india' then 0.10
-               when 'united states', 'usa', 'us', 'unitedstates' then 0.12
-               else 0.0
-               end
-
-    tds = (gross * tds_rate).round(2)
-    net = (gross - tds).round(2)
-
-    render json: {
-      employee_id: @employee.id,
-      country: @employee.country,
-      gross_salary: gross,
-      tds: tds,
-      net_salary: net
-    }
+    render json: @employee.calculate_deductions(gross)
   end
 
   private

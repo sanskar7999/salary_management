@@ -152,7 +152,7 @@ RSpec.describe "Employees API", type: :request do
     end
 
     it 'returns min, max and avg for a given country' do
-      get employees_salary_metrics_by_country_path, params: { country: 'India' }, as: :json
+      get salary_metrics_by_country_employees_path(format: :json), params: { country: 'India' }
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json['minimum_salary']).to eq(1000.0)
@@ -169,7 +169,7 @@ RSpec.describe "Employees API", type: :request do
     end
 
     it 'returns average salary for a job title' do
-      get employees_salary_metrics_by_job_title_path, params: { job_title: 'Developer' }, as: :json
+      get salary_metrics_by_job_title_employees_path(format: :json), params: { job_title: 'Developer' }
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json['average_salary']).to eq(2000.0)

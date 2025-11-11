@@ -9,10 +9,13 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   resources :employees, defaults: { format: :json } do
-    member do
-      post :deductions
+    # GET collection routes for salary metrics
+    collection do
       get :salary_metrics_by_country
       get :salary_metrics_by_job_title
     end
+    
+    # POST member route for deductions
+    post :deductions, on: :member
   end
 end
