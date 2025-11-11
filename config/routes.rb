@@ -7,5 +7,12 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  resources :employees, defaults: { format: :json }
+
+  resources :employees, defaults: { format: :json } do
+    member do
+      post :deductions
+      get :salary_metrics_by_country
+      get :salary_metrics_by_job_title
+    end
+  end
 end
