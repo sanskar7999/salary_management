@@ -169,7 +169,7 @@ RSpec.describe "Employees API", type: :request do
     end
 
     it 'returns average salary for a job title' do
-      get salary_metrics_by_job_title_employees_path(format: :json), params: { job_title: 'Developer' }
+      get average_salary_by_job_title_employees_path(format: :json), params: { job_title: 'Developer' }
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json['average_salary']).to eq(2000.0)

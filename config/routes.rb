@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     # GET collection routes for salary metrics
     collection do
       get :salary_metrics_by_country
-      get :salary_metrics_by_job_title
+      get :average_salary_by_job_title
     end
 
     # POST member route for deductions

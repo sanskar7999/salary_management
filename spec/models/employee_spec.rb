@@ -131,20 +131,20 @@ RSpec.describe Employee, type: :model do
     end
 
     it 'returns average salary for a job title' do
-      result = Employee.salary_metrics_by_job_title('Developer')
+      result = Employee.average_salary_by_job_title('Developer')
 
       expect(result[:job_title]).to eq('Developer')
       expect(result[:average_salary]).to eq(2000.0)
     end
 
     it 'handles case-insensitive job title matching' do
-      result = Employee.salary_metrics_by_job_title('developer')
+      result = Employee.average_salary_by_job_title('developer')
 
       expect(result[:average_salary]).to eq(2000.0)
     end
 
     it 'returns nil when no employees found for a job title' do
-      result = Employee.salary_metrics_by_job_title('CEO')
+      result = Employee.average_salary_by_job_title('CEO')
 
       expect(result[:job_title]).to eq('CEO')
       expect(result[:average_salary]).to be_nil

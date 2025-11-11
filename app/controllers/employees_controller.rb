@@ -46,12 +46,12 @@ class EmployeesController < ApplicationController
     render json: Employee.salary_metrics_by_country(country)
   end
 
-  # GET /employees/salary_metrics_by_job_title?job_title=Developer
-  def salary_metrics_by_job_title
+  # GET /employees/average_salary_by_job_title?job_title=Developer
+  def average_salary_by_job_title
     job_title = params[:job_title]
     return render json: { error: "job_title is required" }, status: :bad_request if job_title.blank?
 
-    render json: Employee.salary_metrics_by_job_title(job_title)
+    render json: Employee.average_salary_by_job_title(job_title)
   end
 
   # POST /employees/:id/deductions
@@ -59,7 +59,7 @@ class EmployeesController < ApplicationController
     gross = params[:gross_salary]
     return render json: { error: "gross_salary is required" }, status: :bad_request if gross.nil?
 
-    render json: @employee.calculate_deductions(gross)
+    render json: @employee.calculate_deductions(gross.to_f)
   end
 
   private
