@@ -99,4 +99,80 @@ RSpec.describe "Employees API", type: :request do
       expect(response).to have_http_status(:no_content)
     end
   end
+
+  describe 'POST /employees/:id/deductions' do
+    context 'India deductions' do
+      let(:employee) { create(:employee, country: 'India') }
+
+      it 'calculates TDS 10% and net salary' do
+        post deductions_employee_path(employee), params: { gross_salary: 1000 }, as: :json
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['tds']).to eq(100.0)
+        expect(json['net_salary']).to eq(900.0)
+      end
+    end
+
+    context 'US deductions' do
+      let(:employee) { create(:employee, country: 'United States') }
+
+      it 'calculates TDS 12% and net salary' do
+        post deductions_employee_path(employee), params: { gross_salary: 1000 }, as: :json
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['tds']).to eq(120.0)
+        expect(json['net_salary']).to eq(880.0)
+      end
+    end
+
+    context 'Other country no deductions' do
+      let(:employee) { create(:employee, country: 'Canada') }
+
+      it 'returns net = gross' do
+        post deductions_employee_path(employee), params: { gross_salary: 500 }, as: :json
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['tds']).to eq(0.0)
+        expect(json['net_salary']).to eq(500.0)
+      end
+    end
+
+    it 'returns bad_request when missing gross_salary' do
+      employee = create(:employee)
+      post deductions_employee_path(employee), as: :json
+      expect(response).to have_http_status(:bad_request)
+    end
+  end
+
+  describe 'GET /employees/salary_metrics_by_country' do
+    before do
+      create(:employee, country: 'India', salary: 1000)
+      create(:employee, country: 'India', salary: 2000)
+      create(:employee, country: 'USA', salary: 3000)
+    end
+
+    it 'returns min, max and avg for a given country' do
+      get employees_salary_metrics_by_country_path, params: { country: 'India' }, as: :json
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json['minimum_salary']).to eq(1000.0)
+      expect(json['maximum_salary']).to eq(2000.0)
+      expect(json['average_salary']).to eq(1500.0)
+    end
+  end
+
+  describe 'GET /employees/salary_metrics_by_job_title' do
+    before do
+      create(:employee, job_title: 'Developer', salary: 1000)
+      create(:employee, job_title: 'Developer', salary: 3000)
+      create(:employee, job_title: 'Manager', salary: 4000)
+    end
+
+    it 'returns average salary for a job title' do
+      get employees_salary_metrics_by_job_title_path, params: { job_title: 'Developer' }, as: :json
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json['average_salary']).to eq(2000.0)
+    end
+  end
 end
