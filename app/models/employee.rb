@@ -6,8 +6,8 @@ class Employee < ApplicationRecord
   validates :salary, numericality: { greater_than: 0 }
 
   # Scopes for querying by country and job title (case-insensitive)
-  scope :by_country, ->(country_name) { where('lower(country) = ?', country_name.to_s.downcase) }
-  scope :by_job_title, ->(job_title_name) { where('lower(job_title) = ?', job_title_name.to_s.downcase) }
+  scope :by_country, ->(country_name) { where("lower(country) = ?", country_name.to_s.downcase) }
+  scope :by_job_title, ->(job_title_name) { where("lower(job_title) = ?", job_title_name.to_s.downcase) }
 
   def full_name
     "#{first_name} #{last_name}"
@@ -32,8 +32,8 @@ class Employee < ApplicationRecord
   # Determine TDS rate based on employee's country
   def tds_rate_for_country
     case country.to_s.strip.downcase
-    when 'india' then 0.10
-    when 'united states', 'usa', 'us', 'unitedstates' then 0.12
+    when "india" then 0.10
+    when "united states", "usa", "us", "unitedstates" then 0.12
     else 0.0
     end
   end

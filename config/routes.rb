@@ -14,7 +14,7 @@ Rails.application.routes.draw do
       get :salary_metrics_by_country
       get :salary_metrics_by_job_title
     end
-    
+
     # POST member route for deductions
     post :deductions, on: :member
   end

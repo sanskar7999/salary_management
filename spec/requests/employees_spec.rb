@@ -58,9 +58,9 @@ RSpec.describe "Employees API", type: :request do
     end
 
     context 'with invalid params' do
-      it 'returns unprocessable_entity and errors' do
+      it 'returns unprocessable_content and errors' do
         post employees_path, params: { employee: invalid_attributes }, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json['errors']).to be_present
       end
@@ -79,9 +79,9 @@ RSpec.describe "Employees API", type: :request do
     end
 
     context 'with invalid params' do
-      it 'returns unprocessable_entity' do
+      it 'returns unprocessable_content' do
         put employee_path(employee), params: { employee: { salary: -100 } }, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json['errors']).to be_present
       end

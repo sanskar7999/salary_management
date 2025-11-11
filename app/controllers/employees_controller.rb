@@ -41,7 +41,7 @@ class EmployeesController < ApplicationController
   # GET /employees/salary_metrics_by_country?country=India
   def salary_metrics_by_country
     country = params[:country]
-    return render json: { error: 'country is required' }, status: :bad_request if country.blank?
+    return render json: { error: "country is required" }, status: :bad_request if country.blank?
 
     render json: Employee.salary_metrics_by_country(country)
   end
@@ -49,7 +49,7 @@ class EmployeesController < ApplicationController
   # GET /employees/salary_metrics_by_job_title?job_title=Developer
   def salary_metrics_by_job_title
     job_title = params[:job_title]
-    return render json: { error: 'job_title is required' }, status: :bad_request if job_title.blank?
+    return render json: { error: "job_title is required" }, status: :bad_request if job_title.blank?
 
     render json: Employee.salary_metrics_by_job_title(job_title)
   end
@@ -57,7 +57,7 @@ class EmployeesController < ApplicationController
   # POST /employees/:id/deductions
   def deductions
     gross = params[:gross_salary]
-    return render json: { error: 'gross_salary is required' }, status: :bad_request if gross.nil?
+    return render json: { error: "gross_salary is required" }, status: :bad_request if gross.nil?
 
     render json: @employee.calculate_deductions(gross)
   end
@@ -74,4 +74,3 @@ class EmployeesController < ApplicationController
     params.require(:employee).permit(:first_name, :last_name, :job_title, :country, :salary)
   end
 end
-
